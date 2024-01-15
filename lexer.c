@@ -438,7 +438,7 @@ TokenList* lexer(char* code) {
         current_char = next_char(code, &position);
     }
 
-    append_token(tokens, create_token(ENDPROG, ENDPROG, num_line));
+    append_token(tokens, create_token(ENDPROG, ENDPROG, num_line+1));
     free(code);
     return tokens;
 }

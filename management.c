@@ -298,10 +298,9 @@ AST* call_function(TokenList* tokens, size_t id) {
     return res;
 }
 
-void bult_in_functions(TokenList* tokens, bool *find) {
+bool bult_in_functions(TokenList* tokens, AST** ast_ptr) {
     int line = tokens->tokens[0]->line;
     if (strcmp(tokens->tokens[0]->value, "print") == 0) {
-        *find = true;
         remove_token(tokens);
         if (strcmp(tokens->tokens[0]->type, LEFTPAREN) != 0) {
             printf("\nSyntaxError on line %i: Left parenthesis was expected", line+1);
@@ -348,6 +347,7 @@ void bult_in_functions(TokenList* tokens, bool *find) {
             printf("%s", end);
         }
         if (strcmp(end, "") == 0) {printf("\n");}
+        return true;
     }
 
     if (strcmp(tokens->tokens[0]->value, "exit") == 0 || strcmp(tokens->tokens[0]->value, "close") == 0) {
@@ -366,7 +366,6 @@ void bult_in_functions(TokenList* tokens, bool *find) {
     }
 
     if (strcmp(tokens->tokens[0]->value, "clear") == 0) {
-        *find = true;
         remove_token(tokens);
         if (strcmp(tokens->tokens[0]->type, LEFTPAREN) != 0) {
             printf("\nSyntaxError on line %i: Left parenthesis was expected", line+1);
@@ -380,5 +379,62 @@ void bult_in_functions(TokenList* tokens, bool *find) {
         remove_token(tokens);
         printf("\n");
         system("clear");
+        return true;
     }
+
+    if (strcmp(tokens->tokens[0]->value, "input") == 0) {
+        string str;
+        Result* result = (Result*)malloc(sizeof(Result));
+        remove_token(tokens);
+        if (strcmp(tokens->tokens[0]->type, LEFTPAREN) != 0) {
+            printf("\nSyntaxError on line %i: Left parenthesis was expected", line+1);
+            exit(EXIT_FAILURE);
+        }
+        remove_token(tokens);
+        if (strcmp(tokens->tokens[0]->type, RIGHTPAREN) != 0) {
+            AST* arg = logic_operators(tokens);
+            processString(arg->item->value.string);
+            printf("%s", arg->item->value.string);
+            if (strcmp(tokens->tokens[0]->type, RIGHTPAREN) != 0) {
+                printf("\nSyntaxError on line %i: Left parenthesis was expected", line+1);
+                exit(EXIT_FAILURE);
+            }
+        }
+        remove_token(tokens);
+        
+        scanf("%s", str);
+        result->type_id = 3;
+        strcpy(result->value.string, str);
+        *ast_ptr = create_ast_node(result, NULL, NULL);
+        return true;
+    }
+
+    if (strcmp(tokens->tokens[0]->value, "int_input") == 0) {
+        double num;
+        Result* result = (Result*)malloc(sizeof(Result));
+        remove_token(tokens);
+        if (strcmp(tokens->tokens[0]->type, LEFTPAREN) != 0) {
+            printf("\nSyntaxError on line %i: Left parenthesis was expected", line+1);
+            exit(EXIT_FAILURE);
+        }
+        remove_token(tokens);
+        if (strcmp(tokens->tokens[0]->type, RIGHTPAREN) != 0) {
+            AST* arg = logic_operators(tokens);
+            processString(arg->item->value.string);
+            printf("%s", arg->item->value.string);
+            if (strcmp(tokens->tokens[0]->type, RIGHTPAREN) != 0) {
+                printf("\nSyntaxError on line %i: Left parenthesis was expected", line+1);
+                exit(EXIT_FAILURE);
+            }
+        }
+        remove_token(tokens);
+        
+        scanf("%lf", &num);
+        result->type_id = 1;
+        result->value.num = num;
+        *ast_ptr = create_ast_node(result, NULL, NULL);
+        return true;
+    }
+
+    return false;
 }

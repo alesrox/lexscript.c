@@ -1,6 +1,9 @@
 string hi = "Hello World"
 print(hi)
 
+string name = input("Your name: ")
+print("Hi", name, conclude=" ")
+
 bool boolean = 1 > 2
 print("Boolean variable value:", boolean, conclude=" ")
 
@@ -42,4 +45,5 @@ function fibonacci_recursive(num : var) does
     return num
 end
 
-print("Recursive fibonacci function: ", fibonacci_recursive(12))
+var usr_input = int_input("Give a number: ")
+print("Recursive fibonacci function: ", fibonacci_recursive(usr_input))

@@ -186,7 +186,7 @@ void for_statement(TokenList* tokens);
 void append_variable(Variables* list, char* name, char* type, AST* value);
 void assigment(TokenList* tokens, char* type);
 void define_funciton(TokenList* tokens);
-void bult_in_functions(TokenList* tokens, bool *find);
+bool bult_in_functions(TokenList* tokens, AST** ast_node);
 AST* call_function(TokenList* tokens, size_t id);
 Variables* initialize_variables();
 

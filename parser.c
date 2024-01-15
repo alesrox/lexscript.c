@@ -205,7 +205,7 @@ AST* non_operators(TokenList* tokens) {
                 }
             }
 
-            bult_in_functions(tokens, &find);
+            if (!find) find = bult_in_functions(tokens, &ast_node);
 
             if (!find) {
                 for (size_t i = 0; i < functions_list->size; i++) {
@@ -223,6 +223,7 @@ AST* non_operators(TokenList* tokens) {
 
             tokens->tokens++;
             tokens->size--;
+            return ast_node;
         } else if (strcmp(tokens->tokens[0]->type, LEFTPAREN) == 0) {
             remove_token(tokens);
             AST* res = logic_operators(tokens);
@@ -235,6 +236,8 @@ AST* non_operators(TokenList* tokens) {
         } else if (strcmp(tokens->tokens[0]->type, NEW_LINE) == 0) {
             tokens->tokens++;
             tokens->size--;
+        } else if (strcmp(tokens->tokens[0]->type, ENDPROG) == 0) {
+            return ast_node;
         } else {
             printf("\nSyntaxError on line %i: Unexpected symbol -> %s", line+1, tokens->tokens[0]->value);
             exit(EXIT_FAILURE);
